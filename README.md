@@ -25,7 +25,7 @@ The database is a SQLite file at `DATABASE_PATH` (default `./data/phonebook.db`)
 | `pnpm e2e` | Builds the app, then runs the Playwright journeys in `e2e/` (installs Chromium if needed) |
 | `pnpm seed [count]` | Adds `count` realistic Contacts (default 2,000) to the database |
 
-The e2e run starts three `next start` servers on ports 3100–3102, each with its own database under `data/e2e/` (see `playwright.config.ts`).
+The e2e run starts four `next start` servers on ports 3100–3103, each with its own database under `data/e2e/` (see `playwright.config.ts`).
 
 ## Layout
 
