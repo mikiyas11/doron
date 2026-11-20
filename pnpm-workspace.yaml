@@ -1,0 +1,6 @@
+# pnpm 11 reads build permissions from here (the "pnpm" field in package.json is ignored).
+allowBuilds:
+  better-sqlite3: true
+  esbuild: true
+  sharp: false
+  unrs-resolver: false
