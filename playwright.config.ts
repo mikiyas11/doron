@@ -6,11 +6,13 @@ import { defineConfig, devices } from "@playwright/test";
  *   empty  — no database file at start (FR-2, AC schema creation)
  *   list   — the fixture Contacts in e2e/fixtures/contacts.ts (FR-1)
  *   large  — 2,000 Contacts loaded by `pnpm seed` (FR-3)
+ *   add    — no database file at start; its tests add Contacts and view them (FR-7, FR-12)
  */
 const servers = {
   empty: { port: 3100, db: "data/e2e/empty.db", prepare: "pnpm exec tsx scripts/e2e-db.ts reset" },
   list: { port: 3101, db: "data/e2e/list.db", prepare: "pnpm exec tsx scripts/e2e-db.ts fixture" },
   large: { port: 3102, db: "data/e2e/large.db", prepare: "pnpm exec tsx scripts/e2e-db.ts reset && pnpm seed 2000" },
+  add: { port: 3103, db: "data/e2e/add.db", prepare: "pnpm exec tsx scripts/e2e-db.ts reset" },
 } as const;
 
 type ServerName = keyof typeof servers;

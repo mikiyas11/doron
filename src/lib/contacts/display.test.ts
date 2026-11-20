@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fullName, groupByInitial, initialLetter } from "./display";
+import { fullName, groupByInitial, initialLetter, mailtoHref, telHref } from "./display";
 import { sortKey } from "./normalize";
 import type { ContactListItem } from "./types";
 
@@ -13,6 +13,20 @@ describe("fullName", () => {
   it(`shows first name then last name [${SORTED}]`, () => {
     expect(fullName({ firstName: "José", lastName: "Álvarez" })).toBe("José Álvarez");
     expect(fullName({ firstName: "Cher", lastName: null })).toBe("Cher");
+  });
+});
+
+describe("telHref and mailtoHref", () => {
+  const DETAILS = "ac_01a1fa1e-0257-7e29-9b3c-6ed74c80ccb1";
+
+  it(`builds tel: links from the digits, keeping a leading + [${DETAILS}]`, () => {
+    expect(telHref("+1 (555) 012-3456")).toBe("tel:+15550123456");
+    expect(telHref("020.7946.0958")).toBe("tel:02079460958");
+    expect(telHref(" +44 20 7946 0958 ")).toBe("tel:+442079460958");
+  });
+
+  it(`builds mailto: links [${DETAILS}]`, () => {
+    expect(mailtoHref("ada@example.com")).toBe("mailto:ada@example.com");
   });
 });
 

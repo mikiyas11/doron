@@ -23,7 +23,20 @@ export type ContactListItem = {
   firstPhone: PhoneNumber | null;
 };
 
-/** Data accepted by the repository's insert helper (used by the seed script and tests). */
+/** A stored Contact with every field; empty optional fields are `null`. Phone numbers are in entered order. */
+export type Contact = {
+  id: string;
+  firstName: string;
+  lastName: string | null;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+  phoneNumbers: PhoneNumber[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+/** Data accepted by the repository's write functions (`createContact`, and the seed/test insert helpers). */
 export type NewContactData = {
   firstName: string;
   lastName?: string | null;

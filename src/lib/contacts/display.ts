@@ -1,4 +1,15 @@
+import { phoneDigits } from "./normalize";
 import type { ContactListItem } from "./types";
+
+/** A one-tap call link: "+1 (555) 012-3456" → "tel:+15550123456". */
+export function telHref(number: string): string {
+  return `tel:${number.trim().startsWith("+") ? "+" : ""}${phoneDigits(number)}`;
+}
+
+/** A one-tap email link. */
+export function mailtoHref(email: string): string {
+  return `mailto:${email.trim()}`;
+}
 
 /** The full Name: first name, then last name when there is one. */
 export function fullName(contact: Pick<ContactListItem, "firstName" | "lastName">): string {

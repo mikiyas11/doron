@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { getDb } from "../db";
 import { phoneDigits, searchName, sortKey } from "./normalize";
-import type { ContactListItem, NewContactData, PhoneLabel } from "./types";
+import type { Contact, ContactListItem, NewContactData, PhoneLabel, PhoneNumber } from "./types";
 
 /**
  * The only module that runs SQL against `contacts` and `phone_numbers` (AD-1).
@@ -69,8 +69,56 @@ function insertOne(data: NewContactData): string {
 }
 
 /**
+ * Stores one Contact and its Phone numbers (with their `digits` and entered `position`) in one
+ * transaction, and returns its new id. Callers validate first with `contactInputSchema` (AD-2).
+ */
+export function createContact(contact: NewContactData): string {
+  return getDb().transaction(insertOne)(contact);
+}
+
+type ContactRow = {
+  id: string;
+  first_name: string;
+  last_name: string | null;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+/** One Contact with every stored field and its Phone numbers in entered order, or `null` for an unknown id. */
+export function getContact(id: string): Contact | null {
+  const db = getDb();
+  const row = db
+    .prepare<[string], ContactRow>(
+      `SELECT id, first_name, last_name, email, address, notes, created_at, updated_at
+         FROM contacts
+        WHERE id = ?`,
+    )
+    .get(id);
+  if (!row) return null;
+  const phoneNumbers = db
+    .prepare<[string], PhoneNumber>(
+      `SELECT label, number FROM phone_numbers WHERE contact_id = ? ORDER BY position`,
+    )
+    .all(id);
+  return {
+    id: row.id,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    email: row.email,
+    address: row.address,
+    notes: row.notes,
+    phoneNumbers: phoneNumbers.map(({ label, number }) => ({ label, number })),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+/**
  * Inserts Contacts without validation, in one transaction, and returns their ids.
- * For the seed script and tests only: the app's writes go through `createContact` (a later Story).
+ * For the seed script and tests only: the app's writes go through `createContact`.
  */
 export function insertContacts(contacts: NewContactData[]): string[] {
   return getDb().transaction((items: NewContactData[]) => items.map(insertOne))(contacts);
