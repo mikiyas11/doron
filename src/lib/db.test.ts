@@ -60,7 +60,7 @@ describe("openDatabase", () => {
   it(`defaults DATABASE_PATH to ./data/phonebook.db [${SCHEMA}]`, () => {
     expect(DEFAULT_DATABASE_PATH).toBe("./data/phonebook.db");
     expect(resolveDatabasePath({} as NodeJS.ProcessEnv)).toBe("./data/phonebook.db");
-    expect(resolveDatabasePath({ DATABASE_PATH: "/tmp/x.db" } as NodeJS.ProcessEnv)).toBe("/tmp/x.db");
+    expect(resolveDatabasePath({ NODE_ENV: "test", DATABASE_PATH: "/tmp/x.db" } as NodeJS.ProcessEnv)).toBe("/tmp/x.db");
   });
 
   it(`git-ignores the data/ folder [${SCHEMA}]`, () => {
